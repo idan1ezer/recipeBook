@@ -3,21 +3,46 @@ import tkinter as tk
 CAT_FONT = ("Comic Sans MS", 12)
 MAIN_FONT = ("Apple SD Gothic Neo", 12)
 SEARCH_FONT = ("Franklin Gothic Book", 12)
+RECIPE_FONT = ("Ariel", 12)
+
+
+class Recipe:
+    def __init__(self, cat, name, plates, ingredients, method, photo_url):
+        self.cat = cat
+        self.name = name
+        self.plates = plates
+        self.ingredients = ingredients
+        self.method = method
+        self.photo_url = photo_url
+
+
+boiled_egg = Recipe("Breakfast", "Boiled Eggs", 2, "eggs", None, None)
+burger = Recipe("Meat", "Burger", 1, "bun, meat, mayo, pickles", None, None)
+salad = Recipe("Salads", "Fresh Salad", 2, "Tomatoes, Cucumber, Onion, Olive Oil, Lemon", None, None)
+salmon = Recipe("Fish", "Salmon", 1, "Salmon, Tariaki sauce, salt", None, None)
+pizza = Recipe("Cheese", "Pizza", 4, "bread, sauce, cheese", None, None)
+panakota = Recipe("Dessert", "Panakota", 2, "Milk, Maple syrup", None, None)
+
+recipes = [boiled_egg, salad, burger, pizza, panakota]
 
 
 class RecipeBook(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        container = tk.Frame(self)
+        tk.Tk.title(self, "My Recipe Book")
+        tk.Tk.iconbitmap(self, "cooking.ico")
+        tk.Tk.geometry(self, "1280x720")
+        tk.Tk.resizable(self, False, False)
 
+        container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
 
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for f in (StartPage, RecipesPage, SearchPage, AddPage, RemPage):
+        for f in (StartPage, RecipesPage, SearchPage):
             frame = f(container, self)
             self.frames[f] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -87,7 +112,7 @@ class SearchPage(tk.Frame):
         btn_search.pack(pady=10, padx=10)
         btn_back.pack(pady=10, padx=10)
 
-
+'''
 class AddPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -98,7 +123,35 @@ class RemPage(tk.Frame):
         tk.Frame.__init__(self, parent)
 
 
-'''
+class SingleRecipePage(tk.Frame):
+
+    def __init__(self, parent, controller, *args):
+        tk.Frame.__init__(self, parent)
+        if type(args[0]) is Recipe:
+            lbl_name = tk.Label(self, text=args[0].name, font=RECIPE_FONT)
+            lbl_plates = tk.Label(self, text=args[0].plates, font=RECIPE_FONT)
+            lbl_ingredients = tk.Label(self, text=args[0].ingredients, font=RECIPE_FONT)
+
+        # page content
+        # name, plates, ingredients, method, photo_url
+        #
+
+        btn_next_recipe = tk.Button(self, text="Next Recipe", font=MAIN_FONT)
+        btn_prev_recipe = tk.Button(self, text="Previous Recipe", font=MAIN_FONT)
+        btn_back_main = tk.Button(self, text="Back to Main", font=CAT_FONT)
+
+
+        btn_back = tk.Button(self, text="Back to Main", font=MAIN_FONT,
+                             command=lambda: controller.show_frame(StartPage))
+
+        btn_cat_list = [btn_breakfast, btn_salads, btn_fish, btn_meat, btn_cheese, btn_desserts, btn_back]
+        for cat in btn_cat_list:
+            cat.pack(pady=10, padx=10)
+            
+        
+
+
+
     def __init__(self):
         self.root = tk.Tk()
         self.root.geometry("600x750")
@@ -112,6 +165,34 @@ class RemPage(tk.Frame):
 
     def startUp(self):
         self.root.mainloop()
+
+
+
+def AddRecipe(recipe):
+    global recipes
+
+    if recipe not in recipes:
+        recipes.append(recipe)
+        return True
+    else:
+        return False
+
+
+def RemoveRecipe(recipe):
+    global recipes
+
+    if recipe in recipe:
+        recipes.remove(recipe)
+        return True
+    else:
+        return False
+
+
+def LoadNextRecipe():
+    global index, recipes
+    index += 1
+
+    temp_recipe = recipes[index]
 
 '''
 
